@@ -17,10 +17,10 @@ const VoterRegister = ({ account }) => {
     const age = document.querySelector("#age").value;
 
     const voterData={
-      gender,
+      gender
     }
     try {
-    const res = await fetch("http://localhost:3000/api/voter-verify",{
+    const res = await fetch("http://localhost:3000/api/voter-verfication",{
        method:"POST",
        headers:{
         "content-type":"application/json"

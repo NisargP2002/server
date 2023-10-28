@@ -14,12 +14,13 @@ const CandidateRegister = ({ account }) => {
     const gender = document.querySelector("#gender").value;
     const party = document.querySelector("#party").value;
     const age = document.querySelector("#age").value;
+   
     const partyData={
       gender,
       party
     }
     try {
-    const res = await fetch("http://localhost:3000/api/candidate-verify",{
+    const res = await fetch("http://localhost:3000/api/candidate-verification",{
        method:"POST",
        headers:{
         "content-type":"application/json"
@@ -28,10 +29,8 @@ const CandidateRegister = ({ account }) => {
     })
     const data = await res.json()
     if(data.message==="Registration Successfull"){
-      await contract.methods
-        .candidateRegister(name, party, age, gender)
-        .send({ from: account, gas: 480000 });
-      toast.success("Registration successful");
+      await contract.methods.candidateRegister(name, party, age, gender).send({ from: account , gas:480000 });
+      toast.success("Registration successfull");
     }else if(data.message==="Gender Value invalid"){
        throw new Error("Gender Value invalid")
     }else{
