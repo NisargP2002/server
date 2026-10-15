@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { WalletContext } from "../../components/Wallet";
 import "./ElectionCommision.css";
 import { toast } from "react-hot-toast";
+import { API_BASE_URL } from "../../config";
 
 const ElectionCommision = ({ account }) => {
   const [winner, setWinner] = useState("No Winner Yet");
@@ -24,12 +25,12 @@ const ElectionCommision = ({ account }) => {
     const startInSeconds = dateToSeconds(startTime);
     const endInSeconds = dateToSeconds(endTime);
     
-    const timeData={
-      startInSeconds,
-      endInSeconds
-    }
+    const timeData = {
+      startTimeSeconds: startInSeconds,
+      endTimeSeconds: endInSeconds,
+    };
     try {
-    const res = await fetch("http://localhost:3000/api/time-verify",{
+    const res = await fetch(`${API_BASE_URL}/api/time-bound`,{
        method:"POST",
        headers:{
         "content-type":"application/json"
@@ -37,7 +38,7 @@ const ElectionCommision = ({ account }) => {
        body:JSON.stringify(timeData),
     })
     const data = await res.json()
-    if(data.message==="Time is less than 24 hours"){
+    if(data.message==="Voting Timer Started"){
       await contract.methods
         .voteTime(startInSeconds, endInSeconds)
         .send({ from: account, gas: 480000 });
