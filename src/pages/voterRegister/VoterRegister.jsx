@@ -7,6 +7,7 @@ import Vote from "../../components/vote/Vote";
 import VotingStatus from "../../components/VotingStatus";
 import "./VoterRegister.css";
 import toast from "react-hot-toast";
+import { API_BASE_URL } from "../../config";
 
 const VoterRegister = ({ account }) => {
   const { contract } = useContext(WalletContext);
@@ -20,7 +21,7 @@ const VoterRegister = ({ account }) => {
       gender
     }
     try {
-    const res = await fetch("http://localhost:3000/api/voter-verfication",{
+    const res = await fetch(`${API_BASE_URL}/api/voter-verification`,{
        method:"POST",
        headers:{
         "content-type":"application/json"
@@ -28,7 +29,7 @@ const VoterRegister = ({ account }) => {
        body:JSON.stringify(voterData),
     })
     const data = await res.json()
-    if(data.message==="Registration Successfull"){
+    if(data.message==="Gender Valid"){
       await contract.methods
         .voterRegister(name, age, gender)
         .send({ from: account, gas: 480000 });
