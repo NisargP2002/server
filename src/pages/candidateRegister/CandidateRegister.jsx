@@ -5,6 +5,7 @@ import Navigation from "../../components/navigation/Navigation";
 import { WalletContext } from "../../components/Wallet";
 import "./CandidateRegister.css";
 import { toast } from "react-hot-toast";
+import { API_BASE_URL } from "../../config";
 
 const CandidateRegister = ({ account }) => {
   const { contract } = useContext(WalletContext);
@@ -20,7 +21,7 @@ const CandidateRegister = ({ account }) => {
       party
     }
     try {
-    const res = await fetch("http://localhost:3000/api/candidate-verification",{
+    const res = await fetch(`${API_BASE_URL}/api/candidate-verification`,{
        method:"POST",
        headers:{
         "content-type":"application/json"
@@ -28,13 +29,11 @@ const CandidateRegister = ({ account }) => {
        body:JSON.stringify(partyData),
     })
     const data = await res.json()
-    if(data.message==="Registration Successfull"){
+    if(data.message==="Gender and Party Are Valid"){
       await contract.methods.candidateRegister(name, party, age, gender).send({ from: account , gas:480000 });
       toast.success("Registration successfull");
-    }else if(data.message==="Gender Value invalid"){
-       throw new Error("Gender Value invalid")
-    }else{
-      throw new Error("Party name clashes")
+    } else {
+      throw new Error(data.message || "Candidate validation failed")
     }
     } catch (error) {
       console.error(error)
